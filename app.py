@@ -42,7 +42,7 @@ if st.button("Process"):
             counts_path = os.path.join("temp", counts_file.name)
 
             with open(phenotype_path, "wb") as f:
-                f.write(phenotype_file.read())
+                f.write(phenotype_file.read())  
             with open(counts_path, "wb") as f:
                 f.write(counts_file.read())
 
@@ -58,6 +58,10 @@ if st.button("Process"):
                 # Match DNA Samples
                 output_file_path = matchingDNA(race_file_path, counts_data, target_dir, f"matched_{race}")
                 st.success(f"Processed Race: {race}. Output saved at: {output_file_path}")
+
+                # Provide a link for downloading the file
+                with open(output_file_path, "rb") as file:
+                    st.download_button(label=f"Download Matched Data for {race}", data=file, file_name=f"matched_{race}.csv", mime="text/csv")
 
         except Exception as e:
             st.error(f"An error occurred: {e}")
