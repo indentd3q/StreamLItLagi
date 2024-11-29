@@ -23,7 +23,7 @@ st.title("Dataset Segregation by Race")
 
 # File Upload Section
 st.header("Upload Files")
-phenotype_file = st.file_uploader("Upload Phenotype TSV File", type=["tsv"])
+phenotype_file = st.file_uploader("Upload Phenotype CSV File", type=["csv"])
 counts_file = st.file_uploader("Upload Counts CSV File", type=["csv"])
 
 # Race Selection and Output Settings
@@ -46,8 +46,8 @@ if st.button("Process"):
             with open(counts_path, "wb") as f:
                 f.write(counts_file.read())
 
-            phenotype_data = pd.read_csv(phenotype_path, sep='\t')
-            counts_data = pd.read_csv(counts_path, sep=',')
+            phenotype_data = pd.read_csv(phenotype_path)
+            counts_data = pd.read_csv(counts_path)
 
             os.makedirs(target_dir, exist_ok=True)
 
