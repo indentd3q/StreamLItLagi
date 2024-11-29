@@ -48,14 +48,14 @@ if st.button("Process"):
             phenotype_data = pd.read_csv(phenotype_path)
             counts_data = pd.read_csv(counts_path)
 
-            os.makedirs(target_dir, exist_ok=True)
+            os.makedirs("temp", exist_ok=True)
 
             for race in selected_races:
                 # Separate by race
-                race_file_path = seperateByRace(phenotype_data, target_dir, race, race)
+                race_file_path = seperateByRace(phenotype_data, "temp", race, race)
 
                 # Match DNA Samples
-                output_file_path = matchingDNA(race_file_path, counts_data, target_dir, f"matched_{race}")
+                output_file_path = matchingDNA(race_file_path, counts_data, "temp", f"matched_{race}")
                 st.success(f"Processed Race: {race}. Output saved at: {output_file_path}")
 
                 # Provide a link for downloading the file
