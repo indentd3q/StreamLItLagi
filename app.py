@@ -45,78 +45,91 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# App Title with Subheader
-st.title("🧬 Dataset Segregation by Race")
-st.subheader("Separate and Match Genetic Data Across Racial Demographics")
+# Create a navigation bar
+page = st.selectbox("Select a Page", ["Home", "Dataset Segregation", "About"])
 
-# Create two columns for file uploaders
-col1, col2 = st.columns(2)
+# Display content based on selected page
+if page == "Home":
+    st.title("Welcome to the Race-Based Dataset Segregation App")
+    st.write("This is the home page. Use the navigation bar to go to other pages.")
 
-with col1:
-    st.markdown("### 📄 Phenotype File")
-    phenotype_file = st.file_uploader("Upload Phenotype CSV", type=["csv"], key="phenotype")
+elif page == "Dataset Segregation":
+    # Dataset Segregation Page content (same as your existing logic)
+    st.title("🧬 Dataset Segregation by Race")
+    st.subheader("Separate and Match Genetic Data Across Racial Demographics")
 
-with col2:
-    st.markdown("### 📊 Counts File")
-    counts_file = st.file_uploader("Upload Counts CSV", type=["csv"], key="counts")
+    # Create two columns for file uploaders
+    col1, col2 = st.columns(2)
 
-# Race Selection with Info
-st.markdown("### 🌍 Race Selection")
-st.info("Choose one or more racial demographics to process")
+    with col1:
+        st.markdown("### 📄 Phenotype File")
+        phenotype_file = st.file_uploader("Upload Phenotype CSV", type=["csv"], key="phenotype")
 
-# Improved Race Selection
-races = ['white', 'black or african american', 'not reported', 'asian', 'american indian or alaska native']
-selected_races = st.multiselect(
-    "Select Races to Separate", 
-    races, 
-    help="Select the racial demographics you want to segregate and analyze"
-)
+    with col2:
+        st.markdown("### 📊 Counts File")
+        counts_file = st.file_uploader("Upload Counts CSV", type=["csv"], key="counts")
 
-# Process Section with Expander
-with st.expander("⚙️ Process Data"):
-    if st.button("Process Datasets", key="process_button"):
-        if phenotype_file and counts_file and selected_races:
-            try:
-                # Existing processing logic remains the same
-                os.makedirs("temp", exist_ok=True)
-                phenotype_path = os.path.join("temp", phenotype_file.name)
-                counts_path = os.path.join("temp", counts_file.name)
+    # Race Selection with Info
+    st.markdown("### 🌍 Race Selection")
+    st.info("Choose one or more racial demographics to process")
 
-                with open(phenotype_path, "wb") as f:
-                    f.write(phenotype_file.read())  
-                with open(counts_path, "wb") as f:
-                    f.write(counts_file.read())
+    # Improved Race Selection
+    races = ['white', 'black or african american', 'not reported', 'asian', 'american indian or alaska native']
+    selected_races = st.multiselect(
+        "Select Races to Separate", 
+        races, 
+        help="Select the racial demographics you want to segregate and analyze"
+    )
 
-                phenotype_data = pd.read_csv(phenotype_path)
-                counts_data = pd.read_csv(counts_path)
+    # Process Section with Expander
+    with st.expander("⚙️ Process Data"):
+        if st.button("Process Datasets", key="process_button"):
+            if phenotype_file and counts_file and selected_races:
+                try:
+                    # Existing processing logic remains the same
+                    os.makedirs("temp", exist_ok=True)
+                    phenotype_path = os.path.join("temp", phenotype_file.name)
+                    counts_path = os.path.join("temp", counts_file.name)
 
-                os.makedirs("temp", exist_ok=True)
+                    with open(phenotype_path, "wb") as f:
+                        f.write(phenotype_file.read())  
+                    with open(counts_path, "wb") as f:
+                        f.write(counts_file.read())
 
-                # Create a container to display processing results
-                results_container = st.container()
+                    phenotype_data = pd.read_csv(phenotype_path)
+                    counts_data = pd.read_csv(counts_path)
 
-                with results_container:
-                    st.markdown("### 🔍 Processing Results")
-                    for race in selected_races:
-                        # Existing race processing logic
-                        race_file_path = seperateByRace(phenotype_data, "temp", race, race)
-                        output_file_path = matchingDNA(race_file_path, counts_data, "temp", f"matched_{race}")
-                        
-                        # Improved result display
-                        col1, col2 = st.columns([3, 1])
-                        with col1:
-                            st.success(f"Processed Race: {race}")
-                        with col2:
-                            with open(output_file_path, "rb") as file:
-                                st.download_button(
-                                    label="Download", 
-                                    data=file, 
-                                    file_name=f"matched_{race}.csv", 
-                                    mime="text/csv",
-                                    key=f"download_{race}"
-                                )
+                    os.makedirs("temp", exist_ok=True)
 
-            except Exception as e:
-                st.error(f"An error occurred: {e}")
-        else:
-            st.warning("Please upload both files and select at least one race.")
+                    # Create a container to display processing results
+                    results_container = st.container()
+
+                    with results_container:
+                        st.markdown("### 🔍 Processing Results")
+                        for race in selected_races:
+                            # Existing race processing logic
+                            race_file_path = seperateByRace(phenotype_data, "temp", race, race)
+                            output_file_path = matchingDNA(race_file_path, counts_data, "temp", f"matched_{race}")
+                            
+                            # Improved result display
+                            col1, col2 = st.columns([3, 1])
+                            with col1:
+                                st.success(f"Processed Race: {race}")
+                            with col2:
+                                with open(output_file_path, "rb") as file:
+                                    st.download_button(
+                                        label="Download", 
+                                        data=file, 
+                                        file_name=f"matched_{race}.csv", 
+                                        mime="text/csv",
+                                        key=f"download_{race}"
+                                    )
+
+                except Exception as e:
+                    st.error(f"An error occurred: {e}")
+            else:
+                st.warning("Please upload both files and select at least one race.")
+
+elif page == "About":
+    st.title("About This App")
+    st.write("This app allows users to segregate and match genetic data based on racial demographics. It provides functionality to separate data by race and match sample IDs from phenotype and count data. The application aims to support research in genomics and health disparities.")
