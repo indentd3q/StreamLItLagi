@@ -30,7 +30,6 @@ counts_file = st.file_uploader("Upload Counts CSV File", type=["csv"])
 st.header("Output Settings")
 races = ['white', 'black or african american', 'not reported', 'asian', 'american indian or alaska native']
 selected_races = st.multiselect("Select Races to Separate", races)
-target_dir = st.text_input("Enter Target Directory Path", value="./output")
 
 # Process Button
 if st.button("Process"):
